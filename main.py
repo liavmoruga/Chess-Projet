@@ -6,13 +6,12 @@ import chess
 import settings
 from assets.assets import AssetManager
 from logic.board import Board
-from logic.agents import RandomBot
+from logic.agents import RandomBot, MinimaxBot
 
 # MAIN GAME
 
 class ChessGame:
     def __init__(self, white_agent=None, black_agent=None):
-        # white_agent/black_agent: None for human, Agent object for bot/online
         
         pygame.init()
         pygame.mixer.init()
@@ -285,48 +284,6 @@ class ChessGame:
                 rect = img.get_rect(center=(mx, my))
                 self.screen.blit(img, rect)
 
-
-def run_game(mode='pvp', opponent_cls=None, side='r'):
-    # helper to setup game modes
-    # mode: 'pvp', 'pve' (player vs engine), 'eve' (engine vs engine)
-    # side: 'w', 'b', 'r' (random) - only applies to pve
-    
-    w_agent = None
-    b_agent = None
-    
-    if mode == 'pvp':
-        pass
-    
-    elif mode == 'eve':
-        # both sides are bots
-        w_agent = opponent_cls()
-        b_agent = opponent_cls()
-        
-    elif mode == 'pve':
-        # decide side
-        if side == 'r':
-            side = random.choice(['w', 'b'])
-            
-        if side == 'w':
-            # player is white, bot is black
-            w_agent = None
-            b_agent = opponent_cls()
-        else:
-            # player is black, bot is white
-            w_agent = opponent_cls()
-            b_agent = None
-            
-    game = ChessGame(white_agent=w_agent, black_agent=b_agent)
-    game.run()
-
 if __name__ == "__main__":
-    # CONFIGURATION
-    
-    # example 1: play against random bot as white
-    # run_game(mode='pve', opponent_cls=RandomBot, side='w')
-    
-    # example 2: watch two bots play
-    run_game(mode='eve', opponent_cls=RandomBot)
-
-    # example 3: local multiplayer
-    # run_game(mode='pvp')
+    game = ChessGame(white_agent=MinimaxBot(3), black_agent=RandomBot(0))
+    game.run()
